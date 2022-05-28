@@ -18,8 +18,6 @@
   <body>
     <div class="container">
       <div id="content"></div>
-
-
     </div>
   </body>
 </html>
