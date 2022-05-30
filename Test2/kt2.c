@@ -1,200 +1,89 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>MPU6050</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css">
-    <style>
-        body{ font:14px sans-serif;}
-        .wrapper{float:left; width: 500px; padding:20px; margin: 20px}
-        .wrapper1{float: left ;margin-left: 500px; margin-top: -413px; width: 70%;  padding:10px}
-        .wrapper2{float: left ;margin-left: 500px; margin-top: -213px;  width: 70%;  padding:10px; width: 200%}
-        .table_width{margin:auto;margin-top: -413px; width:80%}
-        
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js" ></script> 
-</head>
-<body>
-    <div class="wrapper border border-primary rounded rounded-3">
-        <h3 style="color: rgb(255, 77, 6);">MPU 6050 CONTROLLER</h3>
-        <h6>Please fill this form to set up MPU6050 Sensor</h6>
-        <form action="mpu_setup.php" method="POST">
-            <div class="form-group">
-                <label><b>Sample Rate</b></label>
-                <input type="text" name="sample_rate" class="form-control">
-            </div> 
-            <br>   
-            <div class="form-label">
-                <label class="form-label"><b>Digital Low Pass Filter</b> </label>
-                     <br>
-                    <select aria-label="Default select example" id="DLPF" class="form-select" name="dlpf">
-                        <option selected>Choose mode DLPF</option>
-                        <option value="260">260 HZ</option>
-                        <option value="184">184 HZ</option>
-                        <option value="94">94 HZ</option>
-                        <option value="44">44 HZ</option>
-                        <option value="21">21 HZ</option>
-                        <option value="10">10 HZ</option>   
-                        <option value="5">5 HZ</option>
-                        <option value="3">RESERVED</option>
-                    </select>
-            </div>
-            <br>
-            <div class="form-label">
-                <label class="form-label"><b>Accelorometer Full Scale</b> </label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc1" name="AccFS" value="2">
-                        <label class="form-check-label" for=""Acc1>+-2g</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc2" name="AccFS" value="4">
-                        <label class="form-check-label" for=""Acc1>+-4g</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc3" name="AccFS" value="8">
-                        <label class="form-check-label" for=""Acc1>+-8g</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc4" name="AccFS" value="16">
-                        <label class="form-check-label" for=""Acc1>+-16g</label>
-            </div>
-            <br><br>
-            <div class="form-label">
-                <label class="form-label"><b>Gyroscope Full Scale</b></label><br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-label" type="radio" id="GF1" name="GFS" value="250">
-                    <label class="form-check-label" for=""Acc1>+-250</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-label" type="radio" id="GF2" name="GFS" value="500">
-                    <label class="form-check-label" for=""Acc1>+-500</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-label" type="radio" id="GF3" name="GFS" value="1000">
-                    <label class="form-check-label" for=""Acc1>+-1000</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-label" type="radio" id="GF4" name="GFS" value="2000">
-                    <label class="form-check-label" for=""Acc1>+-2000</label>
-                </div>
-                <br>
-                <button type="submit" class="btn btn-primary">Apply</button>
-            </div>
-        </form>
-    </div>
+#include </usr/include/mysql/mysql.h>
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
+#include <math.h> //-lwiringPi -lm
+#include <stdint.h>
+#include <stdio.h>
 
-    <div class="wrapper1 border border-primary rounded rounded-3">
-            <h5 style="color: rgb(74, 205, 23);"> <b>MPU6050 DATA</b>  </h5>
-        <table  class="table table-hover table-striped table_width1" >
-            <tr>
-                <th scope="col">Roll</th> 
-                <td id="td1">  </td>   
-            </tr>
-            <tr>
-                <th scope="col">Pitch</th> 
-                <td id="td2">  </td>   
-            </tr>
-            <tr>
-                <th scope="col">Yaw</th> 
-                <td id="td3">  </td>   
-            </tr>
-        </table>
-    </div>
-    <div class="wrapper2 border border-2 rounded border-primary">
-        <bottom>
-            <h5 style="color: darkblue;"><b> CHART OF MPU6050 </b></h5>
-        </bottom>
-        <canvas id="myChart"></canvas>
-        <br>
-    </div>
+// config resigter address
+#define sample_rate 25 
+#define config 26
+#define gryo_config 27
+#define acc_config 28
+#define interrupt 56
+#define pwr_managment 107
+// read value meaure on reg
+#define Acc_x 59
+#define Acc_y 61
+#define Acc_z 63
 
-    <script>
-        /* Set up Char
-        */
-        var label = [];
-        var data1 = [];
-        var data2 = [];
-        var data3 = [];
-        
-        const chartdata = {
-        labels: label,
-            datasets: [{
-                label: 'data1',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: data1
-            },
-            {
-                label: 'data2',
-                backgroundColor: 'rgb(99, 255, 132)',
-                borderColor: 'rgb(99, 255, 132)',
-                data: data2
-            },
-            {
-                label: 'data3',
-                backgroundColor: 'rgb(132, 99, 255)',
-                borderColor: 'rgb(132, 99, 255)',
-                data: data3
-            }
-        
-            ]
-        };
-        const config = {
-            type: 'line',
-            data: chartdata,
-            options: {
-                animation:false
-            }
-        };
-        var myChart = new Chart(
-            document.getElementById('myChart'),
-            config
-        );
+int mpu;
+uint16_t high, low, data = 0x0000;
 
+float mpu_data;
 
-        //load data
+void Init_6050(void){
+    // Reg 25->28 , 56, 107
+    wiringPiI2CWriteReg8(mpu, sample_rate,0x28); //200Hz
+    wiringPiI2CWriteReg8(mpu, config,0x03); // <=44kHz DLPF
+    wiringPiI2CWriteReg8(mpu, gryo_config,0x08); // gyro FS: +-500 deg/s
+    wiringPiI2CWriteReg8(mpu, acc_config,0x10); // acc FS: +-8g
+    wiringPiI2CWriteReg8(mpu, interrupt,1); // mở interrupt của data ready
+    wiringPiI2CWriteReg8(mpu, pwr_managment,0x01); // chọn nguồn xung Gyro X
+}
 
-        $(document).ready(function(){
-            update_data();
-        });
-        setInterval(update_data,1000); // repeat ham updateRGB moi 1s
-        function update_data(){
-            // gui http request xuong server
-            $.post("readData.php",
-            function(data){
-                var label = [];
-                var data1 = [];
-                var data2 = [];
-                var data3 = [];
-                for(var i in data){
-                
-                // doc gia tri tu server gui len
-                var roll = data[i].Ax;
-                var pitch = data[i].Ay;
-                var yaw = data[i].Az;
+uint16_t Read_MPU(unsigned char reg_address){
+    high = wiringPiI2CReadReg8(mpu, reg_address);
+    low = wiringPiI2CReadReg8(mpu, reg_address+1);
+    data += (high<<8);
+    if(data>0xffff) data= -(65535-data);
+    return data;
+}
+int main(void){ 
 
-                label.push(data[i].id);
-                data1.push(data[i].Ax);
-                data2.push(data[i].Ay);
-                data3.push(data[i].Az);
-                
-                // gan gia cho cac phan tu
-                document.getElementById("td1").innerHTML = roll;
-                document.getElementById("td2").innerHTML = pitch;
-                document.getElementById("td3").innerHTML = yaw;
-                }
-                console.log(data);
-                myChart.data.labels = label;
-                myChart.data.datasets[0].data = data1;
-                myChart.data.datasets[1].data = data2;
-                myChart.data.datasets[2].data = data3;
-                myChart.update();
-                
-            }) 
-        }   
-    </script>
+    mpu = wiringPiI2CSetup(0x68);// setup I2C
 
+    Init_6050(); // Thiết lập chế độ đo
+	
+	// sql set up
+	MYSQL *conn;
 
-</body>
-</html>
+    char *server = "localhost";
+    char *user = "tuduan2"; 
+    char *pass = "tptd1234560";
+    char *dbname = "mpu6050";
+	
+    
+    while(1){
+
+        // Đo gia tốc theo trục x,y,z
+        float Ax = (float)Read_MPU(Acc_x)/4069.0;
+        float Ay = (float)Read_MPU(Acc_y)/4069.0;
+        float Az = (float)Read_MPU(Acc_z)/4069.0;
+
+        // tính Roll(góc quay quanh trục x) 
+        float roll = atan2(Ay,sqrt(pow(Ax,2) + pow(Az,2)))*180/M_PI;
+
+        // tính Pitch(góc quay quanh trục y)
+        float pitch = atan2(Ax,sqrt(pow(Ay,2) + pow(Az,2)))*180/M_PI;
+
+        // tính Yaw(góc quay quanh trục z)
+        float yaw = atan2(Az,sqrt(pow(Ax,2) + pow(Ay,2)))*180/M_PI;
+
+		//  connect to database
+		conn = mysql_init(NULL);
+	    mysql_real_connect(conn,server,user,pass,dbname,0,NULL,0);
+		// Create sql commandS
+		char cmd[200];
+		sprintf(cmd, "insert into data(Ax,Ay,Az) values(%0.2f,%0.2f,%0.2f);",roll, pitch, yaw);
+        printf(cmd);
+        mysql_query(conn,cmd);
+
+		mysql_close(conn);
+		
+		printf("X: %0.2f ---- Y: %0.2f ---- Z: %0.2f  \n", roll, pitch, yaw);
+        data = 0;
+		delay(200);
+	}
+    return 0;
+}
