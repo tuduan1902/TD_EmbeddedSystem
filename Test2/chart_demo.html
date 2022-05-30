@@ -13,7 +13,6 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"> </script>
 </head>
 
-
 <body>
    <div class="wrapper border border-3 rounded border-primary">
       <canvas id="myChart"></canvas>
@@ -26,7 +25,8 @@
       
       const chartdata = {
       labels: label,
-            datasets: [{
+            datasets: [
+            {
                label: 'Data1',
                backgroundColor: 'rgb(255, 99, 132)',
                borderColor: 'rgb(255, 99, 132)',
@@ -83,12 +83,9 @@
                myChart.data.datasets[1].data = data2;
                myChart.data.datasets[2].data = data3;
                myChart.update();
-
-
             })
-
 
       }
    </script>  
-</body> -->
+</body> 
 </html>
