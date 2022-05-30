@@ -7,112 +7,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 	<style>
         body{ font: 15px sans-serif; }
-        .wrapper{ float: left; width: 38%; padding: 10px; margin: 20px; height: 600px;}
-		.box{ margin: auto; width: 60%; height: 70%;}
-		.table_size{margin: auto; width: 70%;}
-        .kichthuoc{width: 85%; padding: 1%; height: 20%;}
-        .nutnhan{width: 100px}
-        .wrapper2{position: absolute; bottom:90px; right:550px;text-align: right;}
-        
+        .wrapper2{float: left; bottom:90px; right:550px;text-align: right;}
     </style>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css">
     <style>
         body{ font: 15px sans-serif; }
-        .wrapper1{ float: right; width: 55%; padding: 10px; margin: 20px; height: 600px; }
+        .wrapper1{ float: left; width: 60%; padding: 20px; margin: 20px; height: 600px; }
         .xuatgtr{ width: 200%; padding: 20px; margin: 20px; height: 60%; }
         .box1{ margin: auto; width: 90%;}
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"> </script>
 </head>
-<body>
-    <div class="wrapper border border-2 rounded border-primary">
-        <h3 style="color: #00695c;"><b> SETTING MPU6050 </b></h3>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ? "method="POST">
-            <div class="form-group kichthuoc">
-                <h6>
-                    <label class="form-label"><b>Sample Rate (Hz) :</b></label> 
-                    <input type="text" name="rate" id="sample_rate" class="form-control">
-                </h6>
-            </div>
-            <div class="mb-3 kichthuoc">
-                <h6><label class="form-label"><b>Digital Low Pass Filter : </b></label>
-                    <select aria-label="Default select example" id="DLPF" class="form-select" name="dlpf">
-                        <option selected>None</option>
-                        <option value="260">260 HZ</option>
-                        <option value="184">184 HZ</option>
-                        <option value="94">94 HZ</option>
-                        <option value="44">44 HZ</option>
-                        <option value="21">21 HZ</option>
-                        <option value="10">10 HZ</option>   
-                        <option value="5">5 HZ</option>
-                    </select>
-                </h6>
-            </div>
-            <div class="mb-3 kichthuoc">
-                <h6>
-                    <label class="form-label"><b> Accelorometer Full Scale : </b></label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc1" name="AccFS" value="2">
-                        <label class="form-check-label" for=""Acc1>+-2g</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc2" name="AccFS" value="4">
-                        <label class="form-check-label" for=""Acc1>+-4g</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc3" name="AccFS" value="8">
-                        <label class="form-check-label" for=""Acc1>+-8g</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="Acc4" name="AccFS" value="16">
-                        <label class="form-check-label" for=""Acc1>+-16g</label>
-                    </div>
-                </h6>
-            </div>
-            <div class="mb-3 kichthuoc">
-                <h6>
-                    <label class="form-label"><b>Gyroscope Full Scale : </b></label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="GF1" name="GFS" value="250">
-                        <label class="form-check-label" for=""Acc1>+-250</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="GF2" name="GFS" value="500">
-                        <label class="form-check-label" for=""Acc1>+-500</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="GF3" name="GFS" value="1000">
-                        <label class="form-check-label" for=""Acc1>+-1000</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="GF4" name="GFS" value="2000">
-                        <label class="form-check-label" for=""Acc1>+-2000</label>
-                    </div>
-                </h6>
-            </div>
-            <div class="mb-3 kichthuoc">
-                <h6>
-                    <label class="form-label"><b>Interrupts : </b></label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="I1" name="INT" value="0">
-                        <label class="form-check-label" for=""Acc1>No</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-label" type="radio" id="I2" name="INT" value="1">
-                        <label class="form-check-label" for=""Acc1>Yes</label>
-                    </div>
-                </h6>
-            </div>
-            <div class="mb-3">
-                <input type="submit" class="btn btn-primary nutnhan" value="Apply">
-            </div>
-        </form>
-    </div>  
-    
+<body>     
     <div class="wrapper1 border border-2 rounded border-primary">
-
         <center>
             <h5 style="color: #00695c;"><b> CHART OF MPU6050 </b></h5>
         </center>
@@ -122,30 +31,30 @@
     <script >
         // Tao bien trong chua noi dung cua do thi
         var label = [];
-        var Ax = [];
-        var Ay = [];
-        var Az = [];
+        var roll = [];
+        var pitch = [];
+        var yaw = [];
         
         // Data trong do thi
         const chartdata = {
             labels: label,
             datasets: [{
-                label: 'Ax',
+                label: 'roll',
                 backgroundColor: 'rgb(178, 0, 31)',
                 borderColor: 'rgb(178, 0, 31)',
-                data: Ax
+                data: roll
             },
             {
-                label: 'Ay',
+                label: 'pitch',
                 backgroundColor: 'rgb(0, 98, 65)',
                 borderColor: 'rgb(0, 98, 65)',
-                data: Ay
+                data: pitch
             },
             {
-                label: 'Az',
+                label: 'yaw',
                 backgroundColor: 'rgb(0, 109, 139)',
                 borderColor: 'rgb(0, 109, 139)',
-                data: Az
+                data: yaw
             }
         
             ]
@@ -155,9 +64,9 @@
             type: 'line',
             data: chartdata,
             options: {
-                animation: false,
-                scales: {xAxes: { title: { display: true, text: 'Number of sampling times',font: {size: 20}}},
-                        yAxes: { title: { display: true, text: 'Values of Accelerometer Measurements',font: {size: 20}}}}
+                animation:false,
+                scales: {xAxes: { title: { display: true, text: 'Number of sampling times',font: {size: 15}}},
+                         yAxes: { title: { display: true, text: 'Values of Accelerometer Measurements',font: {size: 15}}}}
             }
         };
 
@@ -179,49 +88,69 @@
 
                 // Reset bien moi lan dc goi - tranh truong hop data bi don them
                 var label = [];
-                var Ax = [];
-                var Ay = [];
-                var Az = [];
-                
+                var roll = [];
+                var pitch = [];
+                var yaw = [];
+                var r = [];
+                var p =[];
+                var y = [];
 
                 for(var i in data){
                     label.push(data[i].stt); //them phan tu vao trong chuoi
-                    Ax.push(data[i].Ax);
-                    Ay.push(data[i].Ay);
-                    Az.push(data[i].Az);
-                    x.push(data[i].Ax);
-                    y.push(data[i].Ay);
-                    z.push(data[i].Az);
-                    //r.push(data[i].roll);
-                    //p.push(data[i].pitch);
+                    roll.push(data[i].roll);
+                    pitch.push(data[i].pitch);
+                    yaw.push(data[i].yaw);
+                    r.push(data[i].roll);
+                    p.push(data[i].pitch);
+                    y.push(data[i].yaw);
                 }
                 // console.log(data1);
                 myChart.data.labels = label;
                 
-
                 // Cap nhat data lien tuc -> dua len doc gia tri tren web
-                myChart.data.datasets[0].data = Ax;
-                if(myChart.data.datasets[0].data = Ax) 
+
+                myChart.data.datasets[0].data = roll;
+                if(myChart.data.datasets[0].data = roll) 
                 {
-                    document.getElementById("x").innerHTML = x[i];
+                    document.getElementById("r").innerHTML = r[i];
                 }
 
-                myChart.data.datasets[1].data = Ay;
-                if(myChart.data.datasets[1].data = Ay)
+                myChart.data.datasets[1].data = pitch;
+                if(myChart.data.datasets[1].data = pitch)
+                {
+                    document.getElementById("p").innerHTML = p[i];
+                }
+
+                myChart.data.datasets[1].data = yaw;
+                if(myChart.data.datasets[1].data = yaw)
                 {
                     document.getElementById("y").innerHTML = y[i];
                 }
-
-                myChart.data.datasets[2].data = Az;
-                if(myChart.data.datasets[2].data = Az)
-                {
-                    document.getElementById("z").innerHTML = z[i];
-                }
-
                 myChart.update();
             })
         } 
 
     </script>  
+     <div class="wrapper2">
+        <br><br><br>
+        <center class="xuatgtr">
+            <h5 style="color: #00695c;"><b>VALUES OF ROLL, PITCH, YAW</b></h5>
+        
+            <table class="table table-hover table-striped">
+                <tr>
+                    <th scope="col">Roll : </th> 
+                    <td id="r">  </td>   
+                </tr>
+                <tr>
+                    <th scope="col">Pitch : </th> 
+                    <td id="p">  </td>   
+                </tr>
+                <tr>
+                    <th scope="col">Yaw : </th> 
+                    <td id="y">  </td>   
+                </tr>
+            </table>
+        </center>
+    </div>
 </body>
 </html>
