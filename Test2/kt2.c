@@ -1,9 +1,9 @@
+#include </usr/include/mysql/mysql.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 #include <math.h> //-lwiringPi -lm
 #include <stdint.h>
 #include <stdio.h>
-#include <mysql.h>
 
 // config resigter address
 #define sample_rate 25 
@@ -19,6 +19,8 @@
 
 int mpu;
 uint16_t high, low, data = 0x0000;
+
+float mpu_data;
 
 void Init_6050(void){
     // Reg 25->28 , 56, 107
@@ -38,46 +40,49 @@ uint16_t Read_MPU(unsigned char reg_address){
     return data;
 }
 int main(void){ 
-	MYSQL *conn;
 
-    char *server = "192.168.1.22";
-    char *user = "admin";
-    char *password = "123456"; /* set me first */
-    char *database = "mpu6050";
-    mpu = wiringPiI2CSetup(0x68);// setup I2C/
+    mpu = wiringPiI2CSetup(0x68);// setup I2C
 
     Init_6050(); // Thiết lập chế độ đo
-
+	
+	// sql set up
+	MYSQL *conn;
+	
+	char *server = "localhost";
+	char *user = "tuduan2";
+	char *password = "tptd1234560"; 
+	char *database = "mpu6050";
+    
     while(1){
-		// ket noi database
-        conn = mysql_init(NULL);
-        mysql_real_connect(conn,server,user,password,database,0,NULL,0); 
+
         // Đo gia tốc theo trục x,y,z
         float Ax = (float)Read_MPU(Acc_x)/4069.0;
         float Ay = (float)Read_MPU(Acc_y)/4069.0;
         float Az = (float)Read_MPU(Acc_z)/4069.0;
 
         // tính Roll(góc quay quanh trục x) 
-        float roll = atan2(Ax,sqrt(pow(Ay,2) + pow(Az,2)))*180/M_PI;
+        float roll = atan2(Ay,sqrt(pow(Ax,2) + pow(Az,2)))*180/M_PI;
 
         // tính Pitch(góc quay quanh trục y)
-        float pitch = atan2(Ay,sqrt(pow(Ax,2) + pow(Az,2)))*180/M_PI;
+        float pitch = atan2(Ax,sqrt(pow(Ay,2) + pow(Az,2)))*180/M_PI;
 
         // tính Yaw(góc quay quanh trục z)
         float yaw = atan2(Az,sqrt(pow(Ax,2) + pow(Ay,2)))*180/M_PI;
-		
-		// kiem tra cot isUpdated
-        char sql[200];
-        sprintf(sql, "update mpu_value set Ax = %0.3f, Ay = %0.3f, Az = %0.3f where id = 1;",roll, pitch, yaw);
-		mysql_query(conn,sql);
-		mysql_close(conn);
-        printf("\n \tX= %0.3f g \tY= %0.3f g \tZ= %0.3f g \n", roll, pitch, yaw);
-        data = 0;
-		
-        
-		
-        delay(1000);
 
-    }
+		//  connect to database
+		conn = mysql_init(NULL);
+	    mysql_real_connect(conn,server,user,password,database,0,NULL,0);
+		// Create sql commandS
+		char cmd[200];
+		sprintf(cmd, "insert into data(Ax,Ay,Az) values(%0.2f,%0.2f,%0.2f);",roll, pitch, yaw);
+        printf(cmd);
+        mysql_query(conn,cmd);
+
+		mysql_close(conn);
+		
+		printf("X: %0.2f ---- Y: %0.2f ---- Z: %0.2f  \n", roll, pitch, yaw);
+        data = 0;
+		delay(200);
+	}
     return 0;
 }
